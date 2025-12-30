@@ -116,10 +116,20 @@ class MorphologicalAnalyzer:
 # 4. Hybrid Logic & Rule-Based Classification [cite: 29, 79]
 # ---------------------------------------------------------
 class HybridSystem:
-    def __init__(self):
+    def __init__(self, model_path=None):
         self.preprocessor = ImagePreprocessor()
         self.cnn = FractureCNN()
         self.morph_analyzer = MorphologicalAnalyzer()
+        
+        if model_path:
+            try:
+                self.cnn.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+                print(f"Loaded weights from {model_path}")
+            except FileNotFoundError:
+                print(f"Warning: Model file {model_path} not found. Using random weights.")
+            except Exception as e:
+                print(f"Error loading weights: {e}")
+
         self.cnn.eval() # Set to evaluation mode
 
     def analyze_image(self, image_path):
@@ -178,7 +188,8 @@ class HybridSystem:
 # ---------------------------------------------------------
 if __name__ == "__main__":
     # Initialize the Hybrid System
-    system = HybridSystem()
+    # Tries to load the best model if it exists from training
+    system = HybridSystem(model_path="fracture_model_best.pth")
     
     print("System Initialized. Waiting for X-ray input...")
     # To run this, you would provide a path to an actual image:
