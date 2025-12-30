@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from skimage.feature import graycomatrix, graycoprops
 from PIL import Image
+import os
 
 # ---------------------------------------------------------
 # 1. Preprocessing Pipeline [cite: 16, 70]
@@ -191,7 +192,56 @@ if __name__ == "__main__":
     # Tries to load the best model if it exists from training
     system = HybridSystem(model_path="fracture_model_best.pth")
     
-    print("System Initialized. Waiting for X-ray input...")
-    # To run this, you would provide a path to an actual image:
-    # result = system.analyze_image("path_to_xray.jpg")
-    # print(result)
+    # ---------------------------------------------------------
+    # Batch Processing Configuration
+    # ---------------------------------------------------------
+    # "Just like the train data", likely meaning a folder of images
+    INPUT_DIR = "data/inference_input"
+    OUTPUT_DIR = "data/inference_results"
+    
+    print(f"System Initialized. Processing images from '{INPUT_DIR}'...")
+    print(f"Results will be saved to '{OUTPUT_DIR}'...")
+
+    if not os.path.exists(INPUT_DIR):
+        print(f"Input directory '{INPUT_DIR}' not found. Please create it and add X-ray images.")
+    else:
+        # Create output directory if it doesn't exist
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        
+        # Iterate over all files in the input directory
+        valid_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".tif"}
+        processed_count = 0
+        
+        for root, dirs, files in os.walk(INPUT_DIR):
+            for file in files:
+               if os.path.splitext(file)[1].lower() in valid_extensions:
+                    image_path = os.path.join(root, file)
+                    print(f"Analyzing: {file}")
+                    
+                    try:
+                        # Analyze the image
+                        result = system.analyze_image(image_path)
+                        
+                        # Save result to a text file
+                        base_name = os.path.splitext(file)[0]
+                        output_file = os.path.join(OUTPUT_DIR, f"{base_name}_result.txt")
+                        
+                        with open(output_file, "w") as f:
+                            f.write(f"Image: {file}\n")
+                            f.write("-" * 20 + "\n")
+                            for key, value in result.items():
+                                if isinstance(value, dict):
+                                    f.write(f"{key}:\n")
+                                    for sub_key, sub_val in value.items():
+                                        f.write(f"  {sub_key}: {sub_val}\n")
+                                else:
+                                    f.write(f"{key}: {value}\n")
+                            f.write("-" * 20 + "\n")
+                            
+                        processed_count += 1
+                        
+                    except Exception as e:
+                        print(f"Failed to analyze {file}: {e}")
+
+        print(f"\nProcessing complete. {processed_count} images analyzed.")
+        print(f"Check '{OUTPUT_DIR}' for detailed result files.")
