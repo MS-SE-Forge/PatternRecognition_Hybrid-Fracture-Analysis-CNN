@@ -80,13 +80,37 @@ class MorphologicalAnalyzer:
 
     def measure_displacement(self, edges_map):
         """
-        Estimates fracture gap size (displacement) using Hough Transform or contour analysis.
-        Simplified here to return a mock pixel gap for demonstration. [cite: 77]
+        Estimates fracture gap size (displacement) using Hough Transform.
+        Detects line segments in the edge map and calculates the maximum distance
+        between parallel-like segments to approximate the fracture gap. [cite: 77]
         """
-        # In a real scenario, this would calculate the distance between dominant edge lines.
-        # Returning a dummy value to demonstrate the logic flow.
-        estimated_pixel_gap = 5.0  # e.g., 5 pixels
-        return estimated_pixel_gap
+        # Detect lines using Probabilistic Hough Transform
+        lines = cv2.HoughLinesP(edges_map, 1, np.pi/180, threshold=50, minLineLength=20, maxLineGap=10)
+        
+        if lines is None:
+            return 0.0
+
+        max_gap = 0.0
+        
+        # Simple heuristic: Calculate distance between all pairs of lines
+        # In a production system, we would filter for parallel lines specifically within the ROI.
+        # Here we iterate to find the widest meaningful gap which suggests displacement.
+        for i in range(len(lines)):
+            for j in range(i + 1, len(lines)):
+                x1, y1, x2, y2 = lines[i][0]
+                x3, y3, x4, y4 = lines[j][0]
+                
+                # Calculate midpoints
+                mid1 = np.array([(x1 + x2) / 2, (y1 + y2) / 2])
+                mid2 = np.array([(x3 + x4) / 2, (y3 + y4) / 2])
+                
+                # Euclidean distance between midpoints of two line segments
+                gap = np.linalg.norm(mid1 - mid2)
+                
+                if gap > max_gap:
+                    max_gap = gap
+
+        return max_gap
 
 # ---------------------------------------------------------
 # 4. Hybrid Logic & Rule-Based Classification [cite: 29, 79]
