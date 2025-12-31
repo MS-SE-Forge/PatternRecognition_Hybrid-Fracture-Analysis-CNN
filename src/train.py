@@ -146,6 +146,45 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
     print(f"\nTraining complete. Best Val Acc: {best_acc:.4f}")
     print("Model saved to 'fracture_model_best.pth'")
 
+    # ---------------------------------------------------------
+    # Final Testing Phase
+    # ---------------------------------------------------------
+    print("\n" + "="*30)
+    print("FINAL EVALUATION ON TEST SET")
+    print("="*30)
+
+    test_dir = os.path.join(data_dir, 'test')
+    if os.path.exists(test_dir):
+        test_dataset = datasets.ImageFolder(test_dir, transform=data_transforms)
+        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
+        
+        # Load the best model we just saved
+        model.load_state_dict(torch.load("fracture_model_best.pth"))
+        model.eval()
+        
+        test_loss = 0.0
+        test_corrects = 0
+        
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+
+                outputs = model(inputs)
+                _, preds = torch.max(outputs, 1)
+                loss = criterion(outputs, labels)
+
+                test_loss += loss.item() * inputs.size(0)
+                test_corrects += torch.sum(preds == labels.data)
+        
+        test_loss = test_loss / len(test_dataset)
+        test_acc = test_corrects.double() / len(test_dataset)
+        
+        print(f"Test Set Accuracy: {test_acc:.4f}")
+        print(f"Test Set Loss: {test_loss:.4f}")
+    else:
+        print(f"Warning: 'test' directory not found at {test_dir}. Skipping final evaluation.")
+
 if __name__ == "__main__":
     # Example usage
     # User needs to provide the path to their dataset
