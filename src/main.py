@@ -1,3 +1,7 @@
+import warnings
+# Filter deprecated warnings from torchvision
+warnings.filterwarnings("ignore", category=UserWarning) 
+
 import torch
 import torch.nn as nn
 import torchvision.models as models
@@ -252,11 +256,25 @@ if __name__ == "__main__":
     # ---------------------------------------------------------
     # Batch Processing Configuration
     # ---------------------------------------------------------
-    # Batch Processing Configuration
-    # Use path relative to this script to ensure it works on Colab/Local regardless of CWD for execution
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up from src to project root
-    INPUT_DIR = os.path.join(BASE_DIR, "data", "inference_input")
-    OUTPUT_DIR = os.path.join(BASE_DIR, "data", "inference_results")
+    # Logic to find the data directory
+    # Priority 1: 'data' folder in the current working directory (where the user is running the command)
+    # This addresses the issue where the user might have a nested structure but is working from the root
+    cwd_data_input = os.path.join(os.getcwd(), "data", "inference_input")
+    cwd_data_output = os.path.join(os.getcwd(), "data", "inference_results")
+
+    # Priority 2: 'data' folder relative to this script file (in case they are running from a weird location)
+    script_base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up from src to project root
+    script_data_input = os.path.join(script_base_dir, "data", "inference_input")
+    script_data_output = os.path.join(script_base_dir, "data", "inference_results")
+
+    if os.path.exists(cwd_data_input):
+        INPUT_DIR = cwd_data_input
+        OUTPUT_DIR = cwd_data_output
+        print(f"Using input directory from current location: {INPUT_DIR}")
+    else:
+        INPUT_DIR = script_data_input
+        OUTPUT_DIR = script_data_output
+        print(f"WARNING: 'data/inference_input' not found in current directory. Falling back to script-relative path: {INPUT_DIR}")
     
     print(f"System Initialized. Processing images from '{INPUT_DIR}'...")
     print(f"Results will be saved to '{OUTPUT_DIR}'...")
