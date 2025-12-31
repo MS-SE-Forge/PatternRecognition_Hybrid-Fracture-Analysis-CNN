@@ -39,7 +39,7 @@ Imagine two doctors looking at an X-ray together:
 
 ### 1. Install Python
 You need Python (the programming language) installed.
-*   **Check if you have it**: Open your computer's terminal (Command Prompt) and type `python --version`.
+*   **Check if you have it**: Open your computer's terminal (Command Prompt) and type `python3 --version`.
 *   **If not**: Download it from [python.org](https://www.python.org/downloads/).
 
 ### 2. Get the Code
@@ -86,7 +86,7 @@ Project/
 Type this into your terminal:
 
 ```bash
-python src/train.py
+python3 src/train.py
 ```
 
 **What will happen?**
@@ -109,7 +109,7 @@ This is for processing many images at once (e.g., a whole folder of new patients
 3.  Run the main command:
 
     ```bash
-    python src/main.py
+    python3 src/main.py
     ```
 
 4.  **See Results**: Go to the folder `data/inference_results`. You will find a text file for each image (e.g., `patient_X_result.txt`) telling you if they have a fracture.
@@ -120,7 +120,7 @@ This is for processing many images at once (e.g., a whole folder of new patients
 
 | Problem | Solution |
 | :--- | :--- |
-| **"No module named..."** | You missed the installation step. Run `pip install ...` again. |
+| **"No module named..."** | You missed the installation step. Run `pip3 install ...` again. |
 | **"Dataset directory not found"** | You didn't separate your images correctly. Check that you have `data/train` and NOT just `train` sitting alone. |
 | **"RuntimeError" (during training)** | Your images might be corrupted or in a weird format. Ensure they are standard `.jpg` or `.png`. |
 | **Accuracy is very low (<0.6)** | You need more data! Or your "Fractured" and "Normal" folders might be mixed up. |
