@@ -144,7 +144,9 @@ Can you run this on your laptop? **Yes!** But speed varies:
 1.  Go to [colab.research.google.com](https://colab.research.google.com/).
 2.  Click **File > Upload Notebook**.
 3.  Upload the file `notebooks/fracture_analysis_colab.ipynb` from this project.
-4.  Run the cells! (The data will be downloaded automatically from GitHub).
+4.  Run the cells!
+    *   **Note**: If your project is Private, the notebook will ask for a **GitHub Token**.
+    *   Get one here: [GitHub Settings > Developer Settings > Personal Access Tokens](https://github.com/settings/tokens). Select "Repo" permission.
 
 ---
 
