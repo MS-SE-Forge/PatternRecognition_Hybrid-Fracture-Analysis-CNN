@@ -140,6 +140,12 @@ Can you run this on your laptop? **Yes!** But speed varies:
 
 **Tip**: If your computer is too slow, you can use [Google Colab](https://colab.research.google.com/) for free GPU access.
 
+### 🌐 How to use Google Colab
+1.  Go to [colab.research.google.com](https://colab.research.google.com/).
+2.  Click **File > Upload Notebook**.
+3.  Upload the file `notebooks/fracture_analysis_colab.ipynb` from this project.
+4.  Follow the instructions inside the notebook!
+
 ---
 
 ## ☁️ Deployment (Advanced)
