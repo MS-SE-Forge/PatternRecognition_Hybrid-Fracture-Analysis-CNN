@@ -8,6 +8,8 @@ import os
 import cv2
 import numpy as np
 from main import FractureCNN, ImagePreprocessor
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # ---------------------------------------------------------
 # Custom Transform to match Main Pipeline Preprocessing

@@ -5,7 +5,8 @@ import torchvision.transforms as transforms
 import cv2
 import numpy as np
 from skimage.feature import graycomatrix, graycoprops
-from PIL import Image
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
 
 # ---------------------------------------------------------
