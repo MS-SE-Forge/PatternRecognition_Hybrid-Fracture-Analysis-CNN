@@ -43,13 +43,18 @@ You need Python (the programming language) installed.
 *   **If not**: Download it from [python.org](https://www.python.org/downloads/).
 
 ### 2. Get the Code
-Download this project to your computer (unzip it if you downloaded a zip file).
+You can download this project in two ways:
+*   **Option A (Easy)**: Download the ZIP file and unzip it.
+*   **Option B (Developer)**: Clone it using Git:
+    ```bash
+    git clone https://github.com/MS-SE-Forge/PatternRecognition_Hybrid-Fracture-Analysis-CNN.git
+    ```
 
 ### 3. Install the "Brain" Libraries
 Open your terminal inside the project folder and run this magic command. It installs all the tools the AI needs to see and think:
 
 ```bash
-pip install torch torchvision opencv-python numpy scikit-image pillow
+pip3 install torch torchvision opencv-python numpy scikit-image pillow
 ```
 
 *(Note: If you see "command not found", try `pip3` instead of `pip`)*
