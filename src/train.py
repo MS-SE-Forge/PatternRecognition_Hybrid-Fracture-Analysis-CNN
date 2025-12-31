@@ -57,12 +57,20 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
         print("Using device: CPU (Slow)")
 
     # Define transforms
-    # We use our custom preprocessing to ensure consistency with inference
-    data_transforms = transforms.Compose([
+    # 1. Training Transforms (with Data Augmentation)
+    # We add random flips and rotations to make the AI robust to different angles
+    train_transforms = transforms.Compose([
         OpenCVPreprocessing(),
-        transforms.ToTensor(), # Converts 0-255 numpy to 0-1 float tensor
-        # No normalization/standardization here as main.py doesn't use it explicitly beyond ToTensor()
-        # but ResNet usually expects it. For now keeping consistent with main.py structure.
+        transforms.RandomHorizontalFlip(), # 50% chance to flip left-right
+        transforms.RandomRotation(15),     # Rotate image up to 15 degrees
+        transforms.ToTensor(),             # Convert to Tensor (0-1)
+    ])
+
+    # 2. Validation/Test Transforms (No Augmentation)
+    # Just standard preprocessing for fair testing
+    val_transforms = transforms.Compose([
+        OpenCVPreprocessing(),
+        transforms.ToTensor(),
     ])
 
     # Handle 'val' vs 'validation' folder naming
@@ -71,8 +79,8 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
         val_dir = os.path.join(data_dir, 'validation')
     
     try:
-        train_dataset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=data_transforms)
-        val_dataset = datasets.ImageFolder(val_dir, transform=data_transforms)
+        train_dataset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=train_transforms)
+        val_dataset = datasets.ImageFolder(val_dir, transform=val_transforms)
     except FileNotFoundError:
         print(f"Error: Could not find 'train' or 'val'/'validation' directories in {data_dir}")
         return
@@ -168,7 +176,7 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
 
     test_dir = os.path.join(data_dir, 'test')
     if os.path.exists(test_dir):
-        test_dataset = datasets.ImageFolder(test_dir, transform=data_transforms)
+        test_dataset = datasets.ImageFolder(test_dir, transform=val_transforms)
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
         
         # Load the best model we just saved
