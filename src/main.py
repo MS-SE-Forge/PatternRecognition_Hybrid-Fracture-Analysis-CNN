@@ -81,6 +81,11 @@ class MorphologicalAnalyzer:
         """
         Calculates GLCM features and Edge intensity.
         """
+        # Convert PIL Image to Numpy Array if needed
+        # OpenCV needs numpy arrays, but Preprocessor returns PIL
+        if not isinstance(image, np.ndarray):
+            image = np.array(image)
+
         # 1. Edge Detection (Sobel/Canny) 
         edges = cv2.Canny(image, 100, 200)
         edge_density = np.sum(edges) / edges.size
@@ -191,7 +196,15 @@ class HybridSystem:
 
         # Check against "Normal" or synonyms
         if cnn_prediction.lower() in ["normal", "non-fractured", "healthy"]:
-            return "Diagnosis: Healthy Bone Structure"
+            # Return same dictionary structure, but with healthy details
+            return {
+                "Primary_Diagnosis": "Healthy Bone Structure",
+                "Severity": "None",
+                "Metrics": {
+                    "Displacement_mm": 0.0,
+                    "Texture_Contrast": 0.0
+                }
+            }
 
         # Step C: Secondary Analysis (Morphology) [cite: 28]
         features = self.morph_analyzer.analyze_texture(processed_img)
