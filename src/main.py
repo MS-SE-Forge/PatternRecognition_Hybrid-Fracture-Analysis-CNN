@@ -31,8 +31,12 @@ class ImagePreprocessor:
         # Apply Gaussian Smoothing to reduce noise 
         # Using a 5x5 kernel as standard for noise reduction
         smoothed_img = cv2.GaussianBlur(enhanced_img, (5, 5), 0)
+        
+        # Resize to 224x224 (Standard info for ResNet)
+        # This ensures all images in a batch are the same size
+        resized_img = cv2.resize(smoothed_img, (224, 224))
 
-        return smoothed_img
+        return resized_img
 
 # ---------------------------------------------------------
 # 2. Deep Learning Module (CNN) [cite: 17, 38]

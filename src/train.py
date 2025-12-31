@@ -35,8 +35,11 @@ class OpenCVPreprocessing:
         # Apply Gaussian Smoothing
         smoothed_img = cv2.GaussianBlur(enhanced_img, (5, 5), 0)
         
-        # Convert back to PIL Image for ToTensor transform
-        return smoothed_img
+        # Resize to 224x224 to match main.py and fix batch stacking error
+        resized_img = cv2.resize(smoothed_img, (224, 224))
+        
+        # Convert back to PIL Image for ToTensor transform (or return numpy, ToTensor handles both)
+        return resized_img
 
 def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
     # Check device: CUDA > MPS (Mac) > CPU
