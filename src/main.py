@@ -43,6 +43,16 @@ class FractureCNN(nn.Module):
         # Using ResNet50 as the backbone as per comparison table [cite: 100]
         self.backbone = models.resnet50(pretrained=True)
         
+        # Determine device
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            self.device = torch.device("mps")
+        else:
+            self.device = torch.device("cpu")
+            
+        print(f"FractureCNN initialized on: {self.device}")
+        
         # Modify first layer to accept grayscale (1 channel) instead of RGB (3)
         self.backbone.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
         
@@ -148,7 +158,7 @@ class HybridSystem:
         processed_img = self.preprocessor.preprocess(image_path)
         
         # Prepare for CNN (Add batch and channel dims)
-        img_tensor = transforms.ToTensor()(processed_img).unsqueeze(0)
+        img_tensor = transforms.ToTensor()(processed_img).unsqueeze(0).to(self.cnn.device)
         
         # Step B: CNN Initial Localization/Detection [cite: 28]
         with torch.no_grad():

@@ -128,6 +128,20 @@ This is for processing many images at once (e.g., a whole folder of new patients
 
 ---
 
+## 💻 Hardware Recommendations
+
+Can you run this on your laptop? **Yes!** But speed varies:
+
+| Hardware | Speed | Notes |
+| :--- | :--- | :--- |
+| **Mac (M1/M2/M3)** | ⭐⭐⭐ | Good balance. The code now supports Apple Silicon naturally! |
+| **NVIDIA GPU** | ⭐⭐⭐⭐⭐ | The gold standard. Training will be lightning fast. |
+| **Standard Laptop (CPU)** | ⭐ | It works, but might take 10-20 mins to train instead of 1 min. |
+
+**Tip**: If your computer is too slow, you can use [Google Colab](https://colab.research.google.com/) for free GPU access.
+
+---
+
 ## ☁️ Deployment (Advanced)
 *   **Docker**: Use the provided `Dockerfile` to wrap this up for easy shipping.
 *   **Cloud API**: The code can be wrapped in `FastAPI` to serve requests over the internet.

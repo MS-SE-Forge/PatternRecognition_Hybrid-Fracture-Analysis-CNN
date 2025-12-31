@@ -39,9 +39,16 @@ class OpenCVPreprocessing:
         return smoothed_img
 
 def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
-    # Check if GPU is available
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+    # Check device: CUDA > MPS (Mac) > CPU
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print("Using device: CUDA (NVIDIA GPU)")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+        print("Using device: MPS (Apple Silicon GPU)")
+    else:
+        device = torch.device("cpu")
+        print("Using device: CPU (Slow)")
 
     # Define transforms
     # We use our custom preprocessing to ensure consistency with inference
