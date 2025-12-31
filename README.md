@@ -52,11 +52,11 @@ Project/
 ├── src/
 ├── data/
 │   ├── train/
-│   │   ├── Fracture/  <-- Put actual broken bone images here
-│   │   └── Normal/    <-- Put healthy bone images here
+│   │   ├── fractured/  <-- Put actual broken bone images here
+│   │   └── normal/     <-- Put healthy bone images here
 │   └── val/
-│       ├── Fracture/  <-- Put a few broken bone images here
-│       └── Normal/    <-- Put a few healthy bone images here
+│       ├── fractured/  <-- Put a few broken bone images here
+│       └── normal/     <-- Put a few healthy bone images here
 ```
 
 ### Step 2: Run the Training Command

@@ -160,13 +160,12 @@ class HybridSystem:
             if hasattr(self, 'idx_to_class'):
                 cnn_prediction = self.idx_to_class.get(idx, "Unknown")
             else:
-                # Fallback if no mapping found (assuming alphabetical: Fracture=0, Normal=1)
-                # NOTE: Adjust this if your dataset folders are named differently (e.g., 'fractured', 'non-fractured')
-                # Standard convention: 'Fracture' < 'Normal', so 0=Fracture, 1=Normal
+                # Fallback if no mapping found (assuming alphabetical: fractured=0, normal=1)
+                # Standard convention: 'fractured' < 'normal', so 0=fractured, 1=normal
                 if idx == 0:
-                    cnn_prediction = "Fracture"
+                    cnn_prediction = "fractured"
                 else: 
-                     cnn_prediction = "Normal"
+                     cnn_prediction = "normal"
 
         # Check against "Normal" or synonyms
         if cnn_prediction.lower() in ["normal", "non-fractured", "healthy"]:
