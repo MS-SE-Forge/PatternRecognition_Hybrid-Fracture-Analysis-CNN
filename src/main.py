@@ -66,6 +66,9 @@ class FractureCNN(nn.Module):
         # (Fracture vs No Fracture) [cite: 26]
         num_ftrs = self.backbone.fc.in_features
         self.backbone.fc = nn.Linear(num_ftrs, 2) 
+        
+        # Auto-move to the detected device
+        self.to(self.device) 
 
     def forward(self, x):
         return self.backbone(x)
