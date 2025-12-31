@@ -44,7 +44,7 @@ class OpenCVPreprocessing:
         # This ensures ToTensor() creates a (1, H, W) tensor consistently
         return Image.fromarray(resized_img)
 
-def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
+def train_model(data_dir, num_epochs=25, batch_size=32, learning_rate=0.001):
     # Check device: CUDA > MPS (Mac) > CPU
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -103,6 +103,10 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-4)
 
+    # Scheduler: Decays the learning rate by a factor of 0.1 every 7 epochs
+    # This helps the model "settle down" into the best solution
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+
     # Training Loop
     best_acc = 0.0
     
@@ -130,6 +134,9 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
 
             running_loss += loss.item() * inputs.size(0)
             running_corrects += torch.sum(preds == labels.data)
+        
+        # Step the scheduler at the end of training phase
+        scheduler.step()
 
         epoch_loss = running_loss / len(train_dataset)
         epoch_acc = running_corrects.double() / len(train_dataset)
@@ -206,6 +213,21 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
     else:
         print(f"Warning: 'test' directory not found at {test_dir}. Skipping final evaluation.")
 
+    # ---------------------------------------------------------
+    # Auto-Create Inference Directories
+    # ---------------------------------------------------------
+    # Prepare folder structure for the user so they don't get 'Directory not found' errors
+    inference_input_dir = os.path.join(data_dir, "inference_input")
+    inference_output_dir = os.path.join(data_dir, "inference_results")
+    
+    if not os.path.exists(inference_input_dir):
+        os.makedirs(inference_input_dir)
+        print(f"\nCreated inference input directory at: {inference_input_dir}")
+        print("Please upload your X-ray images to this folder for analysis.")
+    
+    if not os.path.exists(inference_output_dir):
+        os.makedirs(inference_output_dir)
+        print(f"Created inference output directory at: {inference_output_dir}")
 if __name__ == "__main__":
     # Example usage
     # User needs to provide the path to their dataset

@@ -233,9 +233,11 @@ if __name__ == "__main__":
     # ---------------------------------------------------------
     # Batch Processing Configuration
     # ---------------------------------------------------------
-    # "Just like the train data", likely meaning a folder of images
-    INPUT_DIR = "data/inference_input"
-    OUTPUT_DIR = "data/inference_results"
+    # Batch Processing Configuration
+    # Use path relative to this script to ensure it works on Colab/Local regardless of CWD for execution
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up from src to project root
+    INPUT_DIR = os.path.join(BASE_DIR, "data", "inference_input")
+    OUTPUT_DIR = os.path.join(BASE_DIR, "data", "inference_results")
     
     print(f"System Initialized. Processing images from '{INPUT_DIR}'...")
     print(f"Results will be saved to '{OUTPUT_DIR}'...")
