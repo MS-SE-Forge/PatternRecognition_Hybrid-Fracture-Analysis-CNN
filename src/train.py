@@ -8,7 +8,7 @@ import os
 import cv2
 import numpy as np
 from main import FractureCNN, ImagePreprocessor
-from PIL import ImageFile
+from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # ---------------------------------------------------------
@@ -40,8 +40,9 @@ class OpenCVPreprocessing:
         # Resize to 224x224 to match main.py and fix batch stacking error
         resized_img = cv2.resize(smoothed_img, (224, 224))
         
-        # Convert back to PIL Image for ToTensor transform (or return numpy, ToTensor handles both)
-        return resized_img
+        # Convert back to PIL Image (Mode 'L') explicitly
+        # This ensures ToTensor() creates a (1, H, W) tensor consistently
+        return Image.fromarray(resized_img)
 
 def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
     # Check device: CUDA > MPS (Mac) > CPU

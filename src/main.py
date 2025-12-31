@@ -37,7 +37,8 @@ class ImagePreprocessor:
         # This ensures all images in a batch are the same size
         resized_img = cv2.resize(smoothed_img, (224, 224))
 
-        return resized_img
+        # Return PIL Image (Mode 'L') to ensure correct tensor shape (1, H, W)
+        return Image.fromarray(resized_img)
 
 # ---------------------------------------------------------
 # 2. Deep Learning Module (CNN) [cite: 17, 38]
