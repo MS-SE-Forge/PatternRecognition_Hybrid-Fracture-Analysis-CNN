@@ -52,32 +52,27 @@ def train_model(data_dir, num_epochs=10, batch_size=32, learning_rate=0.001):
         # but ResNet usually expects it. For now keeping consistent with main.py structure.
     ])
 
-    # Load Datasets
-    # Expected structure:
-    # data_dir/
-    #   train/
-    #     Fracture/
-    #     Normal/
-    #   val/
-    #     Fracture/
-    #     Normal/
+    # Handle 'val' vs 'validation' folder naming
+    val_dir = os.path.join(data_dir, 'val')
+    if not os.path.exists(val_dir):
+        val_dir = os.path.join(data_dir, 'validation')
     
     try:
         train_dataset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=data_transforms)
-        val_dataset = datasets.ImageFolder(os.path.join(data_dir, 'val'), transform=data_transforms)
+        val_dataset = datasets.ImageFolder(val_dir, transform=data_transforms)
     except FileNotFoundError:
-        print(f"Error: Could not find 'train' or 'val' (or both) directories in {data_dir}")
-        print("Please ensure dataset is structured as:")
-        print("  data/train/Fracture")
-        print("  data/train/Normal")
-        print("  data/val/Fracture")
-        print("  data/val/Normal")
+        print(f"Error: Could not find 'train' or 'val'/'validation' directories in {data_dir}")
         return
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
-    print(f"Classes found: {train_dataset.classes}") # Should be ['Fracture', 'Normal'] or similar
+    print(f"Classes found: {train_dataset.classes}")
+    # Save class mapping for inference
+    import json
+    with open('class_mapping.json', 'w') as f:
+        json.dump(train_dataset.class_to_idx, f)
+    print("Saved class mapping to 'class_mapping.json'")
 
     # Initialize Model
     model = FractureCNN()

@@ -122,6 +122,16 @@ class HybridSystem:
         self.cnn = FractureCNN()
         self.morph_analyzer = MorphologicalAnalyzer()
         
+        # Load class mapping if it exists
+        try:
+            import json
+            with open('class_mapping.json', 'r') as f:
+                class_to_idx = json.load(f)
+                self.idx_to_class = {v: k for k, v in class_to_idx.items()}
+                print(f"Loaded class mapping: {self.idx_to_class}")
+        except FileNotFoundError:
+            print("Warning: class_mapping.json not found. Using default alphabetical assumption.")
+        
         if model_path:
             try:
                 self.cnn.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
@@ -144,9 +154,22 @@ class HybridSystem:
         with torch.no_grad():
             outputs = self.cnn(img_tensor)
             _, predicted = torch.max(outputs, 1)
-            cnn_prediction = "Fracture" if predicted.item() == 1 else "Normal"
+            
+            # Determine class label dynamically
+            idx = predicted.item()
+            if hasattr(self, 'idx_to_class'):
+                cnn_prediction = self.idx_to_class.get(idx, "Unknown")
+            else:
+                # Fallback if no mapping found (assuming alphabetical: Fracture=0, Normal=1)
+                # NOTE: Adjust this if your dataset folders are named differently (e.g., 'fractured', 'non-fractured')
+                # Standard convention: 'Fracture' < 'Normal', so 0=Fracture, 1=Normal
+                if idx == 0:
+                    cnn_prediction = "Fracture"
+                else: 
+                     cnn_prediction = "Normal"
 
-        if cnn_prediction == "Normal":
+        # Check against "Normal" or synonyms
+        if cnn_prediction.lower() in ["normal", "non-fractured", "healthy"]:
             return "Diagnosis: Healthy Bone Structure"
 
         # Step C: Secondary Analysis (Morphology) [cite: 28]
