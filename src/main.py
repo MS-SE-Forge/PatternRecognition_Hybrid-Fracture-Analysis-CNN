@@ -157,6 +157,9 @@ class HybridSystem:
             except Exception as e:
                 print(f"Error loading weights: {e}")
 
+        # Ensure model parameters are on the correct device (GPU/MPS/CPU)
+        # This fixes the "Input type (cuda) and weight type (cpu) should be the same" error
+        self.cnn.to(self.cnn.device)
         self.cnn.eval() # Set to evaluation mode
 
     def analyze_image(self, image_path):
