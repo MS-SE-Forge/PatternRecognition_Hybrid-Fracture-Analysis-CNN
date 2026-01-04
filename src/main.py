@@ -12,6 +12,7 @@ from skimage.feature import graycomatrix, graycoprops
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 import os
+from models import FractureCNN # Import from models.py
 
 # ---------------------------------------------------------
 # 1. Preprocessing Pipeline [cite: 16, 70]
@@ -47,35 +48,8 @@ class ImagePreprocessor:
 # ---------------------------------------------------------
 # 2. Deep Learning Module (CNN) [cite: 17, 38]
 # ---------------------------------------------------------
-class FractureCNN(nn.Module):
-    def __init__(self):
-        super(FractureCNN, self).__init__()
-        # Using ResNet50 as the backbone as per comparison table [cite: 100]
-        self.backbone = models.resnet50(pretrained=True)
-        
-        # Determine device
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-        elif torch.backends.mps.is_available():
-            self.device = torch.device("mps")
-        else:
-            self.device = torch.device("cpu")
-            
-        print(f"FractureCNN initialized on: {self.device}")
-        
-        # Modify first layer to accept grayscale (1 channel) instead of RGB (3)
-        self.backbone.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
-        
-        # Modify final fully connected layer for binary classification 
-        # (Fracture vs No Fracture) [cite: 26]
-        num_ftrs = self.backbone.fc.in_features
-        self.backbone.fc = nn.Linear(num_ftrs, 2) 
-        
-        # Auto-move to the detected device
-        self.to(self.device) 
-
-    def forward(self, x):
-        return self.backbone(x)
+# FractureCNN is now imported from models.py to ensure consistency
+# between training and inference scripts.
 
 # ---------------------------------------------------------
 # 3. Morphological & Texture Descriptor Module [cite: 28, 76]
