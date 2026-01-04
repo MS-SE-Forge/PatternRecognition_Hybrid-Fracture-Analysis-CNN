@@ -7,9 +7,9 @@
 ## 👥 Group Members & Roles
 | Student Name | Role | Responsibilities |
 | :--- | :--- | :--- |
-| **[Student 1 Name]** | **Technical Lead** | Model implementation, Experiments, RQ definition, Code submission. |
-| **[Student 2 Name]** | **Figures & Pres.** | Figure design, Visualization, Presentation slides. |
-| **[Student 3 Name]** | **Report Lead** | Report writing, Storytelling, Narrative coherence. |
+| **Kazeem Asiwaju-Bello** | **Technical Lead** | Model implementation, Experiments, RQ definition, Code submission. |
+| **OluwaTosin Ojo** | **Figures & Pres.** | Figure design, Visualization, Presentation slides. |
+| **Priyanka Mohan** | **Report Lead** | Report writing, Storytelling, Narrative coherence. |
 
 ---
 
