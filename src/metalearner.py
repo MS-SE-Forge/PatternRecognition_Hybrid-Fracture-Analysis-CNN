@@ -1,22 +1,10 @@
 #!/usr/bin/env python3
 """
-meta_learner.py (Stacking Meta-Learner)
+meta_learner.py 
 
 Trains a true meta-learner (Logistic Regression) on top of TWO base learners:
 - FractureCNN(backbone=resnet50)
 - FractureCNN(backbone=resnet18)
-
-Meta features = [P(fracture | resnet50), P(fracture | resnet18)]
-
-Expected repo structure (from repo root):
-- src/models.py  (FractureCNN)
-- src/train.py   (get_transforms)
-- data/          (train/val/test folders)
-
-Outputs (to --out directory):
-- meta_learner.pkl
-- <prefix>_Tab2.xlsx
-- <prefix>_Fig2.pdf
 """
 
 import os
