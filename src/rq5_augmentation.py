@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """
-RQ5: Data Augmentation Impact (ResNet50 with vs without augmentation)
-Exports:
-- Figures_Tables/RQ5/RQ5_Fig1.pdf
-- Figures_Tables/RQ5/RQ5_Tab1.xlsx
+RQ5: Data Augmentation + Meta-Learner (Stacking)
 """
-import os, argparse
+import os, argparse, subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
@@ -19,27 +16,34 @@ def main():
     ap.add_argument("--epochs", type=int, default=25)
     ap.add_argument("--batch_size", type=int, default=32)
     ap.add_argument("--out", default="./Figures_Tables")
+    ap.add_argument("--r50", default="model_r50.pth")
+    ap.add_argument("--r18", default="model_r18.pth")
+    ap.add_argument("--run_meta", action="store_true")
     args = ap.parse_args()
 
     rq_dir = os.path.join(args.out, "RQ5")
     os.makedirs(rq_dir, exist_ok=True)
 
-    print("Running RQ5 - WITH augmentation...")
+    print("Running RQ5-A: WITH augmentation...")
     hist_aug, _ = train_model_experiment(
         args.data,
         backbone_name="resnet50",
         use_augmentation=True,
+        use_preprocessing=True,
         num_epochs=args.epochs,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        save_path=os.path.join(rq_dir, "rq5_r50_aug.pth")
     )
 
-    print("Running RQ5 - NO augmentation...")
+    print("Running RQ5-A: NO augmentation...")
     hist_no, _ = train_model_experiment(
         args.data,
         backbone_name="resnet50",
         use_augmentation=False,
+        use_preprocessing=True,
         num_epochs=args.epochs,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        save_path=os.path.join(rq_dir, "rq5_r50_noaug.pth")
     )
 
     fig = plt.figure(figsize=(10,6))
@@ -57,8 +61,28 @@ def main():
     ])
     tab_path = os.path.join(rq_dir, "RQ5_Tab1.xlsx")
     with pd.ExcelWriter(tab_path, engine="openpyxl") as w:
-        df.to_excel(w, index=False, sheet_name="Summary")
+        df.to_excel(w, index=False, sheet_name="Augmentation_Summary")
     print("Saved:", tab_path)
+
+    if args.run_meta:
+        if not (os.path.exists(args.r50) and os.path.exists(args.r18)):
+            print("Skipping meta-learner: missing base weights. Run RQ1 first to create model_r50.pth and model_r18.pth.")
+            return
+
+        meta_script = os.path.join("src", "meta_learner.py")
+        if not os.path.exists(meta_script):
+            raise FileNotFoundError("src/meta_learner.py not found. Add it to repo and rerun.")
+
+        print("Running RQ5-B: Meta-learner stacking...")
+        subprocess.check_call([
+            "python", meta_script,
+            "--data", args.data,
+            "--batch_size", str(args.batch_size),
+            "--r50", args.r50,
+            "--r18", args.r18,
+            "--out", rq_dir,
+            "--prefix", "RQ5"
+        ])
 
 if __name__ == "__main__":
     main()
