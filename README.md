@@ -17,9 +17,11 @@
 This project implements a **Hybrid Fracture Analysis System** that combines Deep Learning (CNNs) with Rule-Based Morphological Analysis to detect bone fractures and estimate their severity (Hairline vs. Severe).
 
 ### Key Features
+
 1.  **Deep Learning Classifier**: ResNet50 (and ResNet18 comparison) to detect fractures.
 2.  **Rule-Based Logic**: Uses Edge Detection and Hough Transform to measure displacement.
 3.  **Hybrid Reasoning**: Combines AI confidence with measured displacement for final diagnosis.
+
 
 ---
 
@@ -98,8 +100,14 @@ Project/
 ├── notebooks/            <-- Colab & Submission notebooks
 ├── src/                  <-- Source Code
 │   ├── models.py         <-- ResNet50, ResNet18, Ensemble definitions
+│   ├── metalearner.py    <-- Stacking Meta-Learner (Logistic Regression)
 │   ├── train.py          <-- Training loop & Experiment logic
-│   └── main.py           <-- Inference & Hybrid System logic
+│   ├── main.py           <-- Inference & Hybrid System logic
+│   ├── rq1_backbone.py   <-- RQ1 Experiment Script
+│   ├── rq2_preprocessing.py <-- RQ2 Experiment Script
+│   ├── rq3_ensemble.py   <-- RQ3 Experiment Script
+│   ├── rq4_rule_engine.py <-- RQ4 Experiment Script
+│   └── rq5_augmentation.py <-- RQ5 Experiment Script
 ├── submission_notebook.ipynb <-- MAIN ENTRY POINT
 └── README.md             <-- This file
 ```

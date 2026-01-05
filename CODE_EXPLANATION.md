@@ -7,8 +7,10 @@ This document explains the technical implementation of the Hybrid Fracture Analy
 ## 1. `src/models.py`: The Neural Architectures
 This file defines the Deep Learning models. We moved the model definitions here to allow both training and inference scripts to share the exact same code.
 
+
 ### 🧠 `FractureCNN`
 The primary classifier. It can be initialized with different backbones:
+
 - **ResNet50**: The default heavy backbone for maximum accuracy.
 - **ResNet18**: A lighter backbone for speed/efficiency comparisons (RQ1).
 
@@ -20,8 +22,10 @@ class FractureCNN(nn.Module):
         ...
 ```
 
+
 ### 🤝 `EnsembleModel`
 A voting ensemble used for RQ3. It takes two trained models and averages their predictions to improve reliability.
+
 
 ---
 
@@ -60,3 +64,38 @@ This is the main entry point for the Project Part 2 submission.
 - **Runs all Experiments**: Executes RQ1 through RQ5.
 - **Generates Figures**: Automatically saves plots to `Figures_Tables/`.
 - **Reproducible**: Runs end-to-end to verify the entire pipeline.
+
+---
+
+## 5. Research Question Modules (`src/rq*.py`)
+Dedicated scripts to reproduce specific experiments for the report.
+
+### `rq1_backbone.py`
+- Compares ResNet50 vs. ResNet18 backbones.
+- Trains both under identical conditions and plots loss/accuracy curves.
+
+### `rq2_preprocessing.py`
+- Evaluates the impact of the Preprocessing Pipeline (CLAHE + Gaussian Blur).
+- Comparison: ResNet50 with preprocessing vs. raw images.
+
+### `rq3_ensemble.py`
+- Implements the Voting Ensemble (Soft Voting).
+- Uses weights from RQ1 (`model_r50.pth`, `model_r18.pth`) to average predictions.
+- Generates a comparison bar chart.
+
+### `rq4_rule_engine.py`
+- Runs the `HybridSystem` on validation data.
+- Analyzes the correlation between CNN confidence and Morphological Severity.
+- Plots a histogram of fracture displacements.
+
+### `rq5_augmentation.py`
+- Tests the effect of Geometric Data Augmentation (Flip/Rotate) on generalization.
+
+---
+
+## 6. Advanced Models (`src/metalearner.py`)
+### `metalearner.py`
+- Implements a Stacking Meta-Learner.
+- **Features**: Takes the probability outputs from ResNet50 and ResNet18.
+- **Meta-Model**: Trains a Logistic Regression classifier on these probabilities to make the final decision using the validation set.
+

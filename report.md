@@ -59,7 +59,9 @@ To validate our system, we defined the following five research questions:
 
 ---
 
+
 ## Appendix: Implementation Details
 - **Framework**: PyTorch
 - **Hardware**: [GPU/CPU used]
-- **Submission**: See `submission_notebook.ipynb` for full experimental code.
+- **Submission**: See `submission_notebook.ipynb` and `src/rq*.py` scripts for full experimental code.
+
