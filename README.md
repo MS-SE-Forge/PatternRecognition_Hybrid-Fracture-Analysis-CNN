@@ -1,7 +1,8 @@
 # Hybrid Fracture Analysis System 🦴
 
 > **Part 2 Submission**
-> **Group Number**: [Insert Group Number]
+> **Group Number**: 27
+
 > **Course**: Pattern Recognition (M.Sc.)
 
 ## 👥 Group Members & Roles

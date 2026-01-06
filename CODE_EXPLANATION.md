@@ -7,7 +7,6 @@ This document explains the technical implementation of the Hybrid Fracture Analy
 ## 1. `src/models.py`: The Neural Architectures
 This file defines the Deep Learning models. We moved the model definitions here to allow both training and inference scripts to share the exact same code.
 
-
 ### 🧠 `FractureCNN`
 The primary classifier. It can be initialized with different backbones:
 
@@ -21,7 +20,6 @@ class FractureCNN(nn.Module):
         # Modified conv1 to accept Grayscale (1-channel) input
         ...
 ```
-
 
 ### 🤝 `EnsembleModel`
 A voting ensemble used for RQ3. It takes two trained models and averages their predictions to improve reliability.

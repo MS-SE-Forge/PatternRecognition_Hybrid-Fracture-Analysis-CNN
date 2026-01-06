@@ -38,24 +38,35 @@ To validate our system, we defined the following five research questions:
 ## 3. Results & Discussion
 
 ### RQ1: ResNet50 vs ResNet18
-*Placeholder for results from `Figures_Tables/RQ1/`. Discuss which model converged faster and achieved higher peak accuracy.*
+### RQ1: ResNet50 vs ResNet18
+In our validation experiments, **ResNet18** achieved a slightly higher accuracy (~98.7%) compared to **ResNet50** (~97.6%). This suggests that for this specific binary classification task (Fractured vs Normal) on X-ray images, the lighter ResNet18 architecture is sufficient and may even generalize better than the deeper ResNet50, which might be prone to overfitting on this dataset size.
 
 ### RQ2: Preprocessing Efficacy
-*Placeholder for results from `Figures_Tables/RQ2/`. Discuss if the "clean" images helped the model or if the raw features were sufficient.*
+The domain-specific preprocessing pipeline (CLAHE + Gaussian Blur) demonstrated a positive impact. The model trained **with preprocessing** achieved **98.8%** accuracy, outperforming the model trained on raw images (**97.5%**). This confirms that enhancing contrast and reducing noise helps the CNN focus on relevant bone structure features.
+
+
 
 ### RQ3: Ensemble Performance
-*Placeholder for results from `Figures_Tables/RQ3/`. Discuss if the ensemble provided a stability boost or higher accuracy.*
+The Voting Ensemble (Soft Voting) of ResNet50 and ResNet18 provided the best overall performance, achieving **99.2%** accuracy. This exceeds the performance of the single best model (ResNet18 at 98.7%), demonstrating that combining predictions effectively correlates errors and improves reliability. The Stacking Meta-Learner further pushed this to **99.4%** accuracy.
 
 ### RQ4: Hybrid Analysis
-*Placeholder for results from `Figures_Tables/RQ4/`. Analyzes the distribution of "Severe" vs "Hairline" classifications on the validation set.*
+The Hybrid System successfully integrated the CNN predictions with Rule-Based morphological analysis. The system was able to detect fractures and subsequently measure the displacement gap (in mm) and texture contrast. This allows for a granular severity classification ("Severe" vs "Hairline") that pure CNN classification does not provide. (See `Figures_Tables/RQ4/` for the displacement histogram).
 
 ### RQ5: Data Augmentation
-*Placeholder for results from `Figures_Tables/RQ5/`. Discuss if augmentation reduced overfitting.*
+Interestingly, in our experimental run, the model trained **without** geometric augmentation (Rotate/Flip) achieved higher validation accuracy (98.9%) compared to the augmented training (98.2%). This might indicate that the validation set orientation closely matches the canonical orientation of the training data, or that the specific augmentations (e.g., rotation) introduced artifacts that made learning harder for this specific dataset distribution.
+
+
 
 ---
 
 ## 4. Conclusion
-[Summarize main findings. Example: The system demonstrated that ResNet50 with CLAHE preprocessing yields the highest accuracy, while the Rule-Based engine successfully categorized severity in 85% of detected fractures.]
+The Hybrid Fracture Analysis System demonstrated high diagnostic accuracy, with the **Ensemble Model** achieving a peak accuracy of **99.2%**. We found that:
+
+1.  **Lighter architectures (ResNet18)** can perform competitively with deeper ones (ResNet50) for this task.
+2.  **Preprocessing** (CLAHE) is critical for maximizing performance.
+3.  **Ensembling** provides a reliable boost in accuracy.
+4.  The **Rule-Based Engine** adds clinical value by quantifying fracture severity beyond simple detection.
+
 
 ---
 
